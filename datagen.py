@@ -8,7 +8,7 @@ import config
 
 import tensorflow as tf
 import shutil
-import pickle
+
 
 def main(data_home, ex_home, initialize=False):
     # Download Data
