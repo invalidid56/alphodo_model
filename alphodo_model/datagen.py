@@ -18,7 +18,7 @@ def main(data_home, ex_home, batch_size=128, initialize=False):
             shutil.rmtree(data_home)
         os.mkdir(data_home)
 
-        with open('img_urls.txt') as f:
+        with open('../img_urls.txt') as f:
             for i, url in enumerate(f.readlines()):
                 print(i)
                 try:
