@@ -10,7 +10,7 @@ import tensorflow as tf
 import shutil
 
 
-def main(data_home, ex_home, initialize=False):
+def main(data_home, ex_home, batch_size=128, initialize=False):
     # Download Data
     # 계속 보내면 423으로 막아버림, 중간중간 끊어서 다운로드 필요
     if initialize:
@@ -27,7 +27,7 @@ def main(data_home, ex_home, initialize=False):
                 except urllib.error.HTTPError:
                     #time.sleep(600) # 미봉책
                     #wget.download(url, data_home)
-                    print('error occured')
+                    print('WGET DOWNLOAD ERROR')
                     continue
                 if i > 100:
                     break
@@ -70,7 +70,6 @@ def main(data_home, ex_home, initialize=False):
 
     img_height = 248
     img_width = 248
-    batch_size = 16
     train_ds = tf.keras.preprocessing.image_dataset_from_directory(
         ex_home,
         validation_split=0.2,
@@ -96,7 +95,7 @@ def main(data_home, ex_home, initialize=False):
 
 
 if __name__ == '__main__':
-    main(config.parse()['DATA_HOME'], config.parse()['EX_HOME'], initialize=False)
+    main(config.parse()['DATA_HOME'], config.parse()['EX_HOME'], batch_size=config.parse()['BATCH_SIZE'], initialize=False)
 
 # 논문 페이지에서 이미지 다운로드 받고(DATA_HOME), nparray로 저장
 
