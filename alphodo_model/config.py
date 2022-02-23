@@ -21,14 +21,14 @@ def main():
               "TRAIN_STEP": train_step,
               "EVAL_STEP": eval_step}
 
-    with open(os.path.join(os.getcwd(), '../config.json'), 'w', encoding='utf-8') as f:
+    with open(os.path.join(os.getcwd(), 'config.json'), 'w', encoding='utf-8') as f:
         json.dump(config, f, ensure_ascii=False, indent='\t')
 
     return 0
 
 
 def parse():
-    with open(os.path.join(os.getcwd(), '../config.json'), 'r', encoding='utf-8') as f:
+    with open(os.path.join(os.getcwd(), 'config.json'), 'r', encoding='utf-8') as f:
         json_data = json.load(f)
         # TODO: Exception
     return json_data

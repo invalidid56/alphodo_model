@@ -9,6 +9,8 @@ import config
 import tensorflow as tf
 import shutil
 
+from keras.preprocessing.image import ImageDataGenerator
+
 
 def main(data_home, ex_home, batch_size=128, initialize=False):
     # Download Data
@@ -31,7 +33,6 @@ def main(data_home, ex_home, batch_size=128, initialize=False):
                     continue
                 if i > 100:
                     break
-    # Data Aug
 
     # Labeling Images
 
@@ -46,7 +47,7 @@ def main(data_home, ex_home, batch_size=128, initialize=False):
     }
     diseases = reg.keys()
 
-    file_list = [file for file in os.listdir(data_home) if file.endswith('.jpg')]
+    file_list = [file for file in os.listdir(data_home) if (file.endswith('.jpg') or file.endswith('.jpeg'))]
     if os.path.isdir(ex_home):
         shutil.rmtree(ex_home)
     os.mkdir(ex_home)
@@ -86,6 +87,46 @@ def main(data_home, ex_home, batch_size=128, initialize=False):
         image_size=(img_height, img_width),
         batch_size=batch_size
     )
+
+    # Data Aug
+    '''
+    image_generator = ImageDataGenerator(
+        rotation_range=45,
+        width_shift_range=0.25,
+        height_shift_range=0.25,
+        zoom_range=0.25,
+        horizontal_flip=True,
+        fill_mode='nearest',
+    )
+
+    train_result = image_generator.flow_from_directory(
+        ex_home,
+        target_size=(248, 248),
+        batch_size=batch_size,
+        # binary_crossentropy 손실 함수를 사용하므로 binary 형태로 라벨을 불러와야 합니다.
+    )
+
+    train_ds = ImageDataGenerator(
+        rescale=1. / 255.,
+        width_shift_range=0.3,
+        zoom_range=0.7,
+        horizontal_flip=True
+    )
+    val_ds = ImageDataGenerator(
+        rescale=1. / 255.,
+    )
+    train_result = train_ds.flow_from_directory(
+        ex_home,
+        target_size=(248, 248),
+        batch_size=batch_size,
+    )
+    test_result = val_ds.flow_from_directory(
+        ex_home,
+        target_size=(248, 248),
+        batch_size=batch_size,
+    )
+    '''
+    # Save
     norm_layer = tf.keras.layers.experimental.preprocessing.Rescaling(1./255)
 
     train_ds = train_ds.map(lambda x, y: (norm_layer(x), y))
@@ -95,7 +136,7 @@ def main(data_home, ex_home, batch_size=128, initialize=False):
 
 
 if __name__ == '__main__':
-    main(config.parse()['DATA_HOME'], config.parse()['EX_HOME'], batch_size=config.parse()['BATCH_SIZE'], initialize=False)
+    main(config.parse()['DATA_HOME'], config.parse()['EX_HOME'], batch_size=int(config.parse()['BATCH_SIZE']), initialize=False)
 
 # 논문 페이지에서 이미지 다운로드 받고(DATA_HOME), nparray로 저장
 

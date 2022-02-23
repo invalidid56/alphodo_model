@@ -3,6 +3,7 @@ import os.path
 import datagen
 import config
 import tensorflow as tf
+import keras.callbacks
 import model
 import shutil
 
@@ -17,8 +18,10 @@ def main(initialize=False, version=1):
     train_model = model.idcnn()
     epoch = int(conf['TRAIN_STEP'])
 
-    train_model.compile(loss=tf.losses.SparseCategoricalCrossentropy(from_logits=True), optimizer='adam', metrics=['accuracy'])
-    history = train_model.fit(train_ds, epochs=epoch)
+    callB = keras.callbacks.TensorBoard()
+    train_model.compile(loss=tf.losses.SparseCategoricalCrossentropy(from_logits=True),
+                        optimizer='adam', metrics=['accuracy'])
+    history = train_model.fit(train_ds, epochs=epoch, callbacks=[callB])
 
     test_loss, test_acc = train_model.evaluate(val_ds)
     print('\nTest accuracy: {}'.format(test_acc))
